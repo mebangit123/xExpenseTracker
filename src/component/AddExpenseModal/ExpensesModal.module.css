@@ -1,0 +1,4 @@
+.form_control_container{
+    display: flex;
+    column-gap: 10px;
+}
