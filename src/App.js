@@ -1,6 +1,7 @@
 import {Box} from '@mui/material';
 import WalletBalance from './component/Wallet/WalletBalance'
 import ExpenseBalance from './component/Expense/ExpenseBalance'
+import ExpenseTransanction from './component/Transanction/ExpenseTransanction'
 import { useEffect, useState } from 'react';
 function App() {
   const [balance, setBalance] = useState(0);
@@ -8,38 +9,98 @@ function App() {
   const [expenseList, setExpenseList] = useState([]);
   const [expenseBalance, setExpenseBalance] = useState(0);
 
+  const [categorySpends, setCategorySpends] = useState({
+    food: 0,
+    entertainment: 0,
+    travel: 0,
+  });
+  const [categoryCount, setCategoryCount] = useState({
+    food: 0,
+    entertainment: 0,
+    travel: 0,
+  });
+
   useEffect(() => {
-    let localBalance = localStorage.getItem('balance');
+    console.log('UseEffect 1......')
+    let localBalance = localStorage.getItem("balance");
     if (localBalance) {
       handleBalance(Number(localBalance));
     } else {
       handleBalance(5000);
     }
-    const expenseItems = JSON.parse(localStorage.getItem('expense'));
+    const expenseItems = JSON.parse(localStorage.getItem("expense"));
     setExpenseList(expenseItems || []);
   },[]);
   
+
   useEffect(() => {
+    console.log('UseEffect 3......')
     console.log('expense change.....')    
     if(expenseList.length > 0) {
-      localStorage.setItem('expense', JSON.stringify(expenseList));
-    } else {
+      localStorage.setItem('expense', JSON.stringify(expenseList));      
+    } 
+    if (expenseList.length > 0) {
+      setExpenseBalance(
+        expenseList.reduce(
+          (accumulator, currentValue) =>
+            accumulator + Number(currentValue.price),
+          0
+        )
+      );
+    }
+    else {
       setExpenseBalance(0);
     }
+    let foodSpends = 0,
+      entertainmentSpends = 0,
+      travelSpends = 0;
+    let foodCount = 0,
+      entertainmentCount = 0,
+      travelCount = 0;
+
+    expenseList.forEach((item) => {
+      if (item.category == "food") {
+        foodSpends += Number(item.price);
+        foodCount++;
+      } else if (item.category == "entertainment") {
+        entertainmentSpends += Number(item.price);
+        entertainmentCount++;
+      } else if (item.category == "travel") {
+        travelSpends += Number(item.price);
+        travelCount++;
+      }
+    });
+
+    setCategorySpends({
+      food: foodSpends,
+      travel: travelSpends,
+      entertainment: entertainmentSpends,
+    });
+
+    setCategoryCount({
+      food: foodCount,
+      travel: travelCount,
+      entertainment: entertainmentCount,
+    });
   }, [expenseList]);
 
   const handleBalance = (bal) => {
-    localStorage.setItem('balance', bal);
+    // localStorage.setItem('balance', bal);
     setBalance(prevBal => prevBal + bal);    
   }
   
+  useEffect(() => {
+    console.log('UseEffect balChange......')
+    // if(localStorage.getItem("balance") > 5000) {
+      localStorage.setItem("balance", balance);
+    // }        
+  },[balance]);
+
   return (
     <Box 
       sx={{
-        height: 'calc(100vh - 32px)',
+        height: '100vh',
         background: '#3B3B3B',
-        margin: 2,
-        borderRadius: 0.75,
         paddingTop: 2,
         paddingX: 2,
         boxSizing: 'border-box'
@@ -75,7 +136,14 @@ function App() {
         >
           <div style={{display: 'flex',justifyContent: 'space-between', alignItems:'center', height: '70%',width: '60%', paddingLeft: '50px'}}>
             <WalletBalance handleBalance={handleBalance} balance={balance}/>
-            <ExpenseBalance expenseList={expenseList} expenseBalance={expenseBalance} setExpenseList={setExpenseList} />
+            <ExpenseBalance 
+              expenseList={expenseList} 
+              expenseBalance={expenseBalance} 
+              setExpenseList={setExpenseList} 
+              setExpenseBalance={setExpenseBalance} 
+              balance={balance} 
+              setBalance={setBalance} 
+            />
           </div>   
           <div style={{width: '30%'}}>Other content</div>
         </Box>
@@ -92,8 +160,16 @@ function App() {
           Recent Transaction
         </h1> 
         <Box display='flex'>
-          {/* <WalletBalance width='50%' heigth='70%'/>
-          <WalletBalance width='50%' heigth='70%'/> */}
+          <ExpenseTransanction 
+            isEdit={isEdit} 
+            setIsEdit={setIsEdit}
+            expenseList={expenseList} 
+            expenseBalance={expenseBalance} 
+            setExpenseList={setExpenseList} 
+            setExpenseBalance={setExpenseBalance} 
+            balance={balance} 
+            setBalance={setBalance} 
+          />
         </Box>       
       </Box>       
     </Box>

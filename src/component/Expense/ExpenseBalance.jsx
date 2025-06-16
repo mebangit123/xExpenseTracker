@@ -1,7 +1,7 @@
 import {Box} from '@mui/material'
 import { useState } from 'react';
 import AddEditExpenseModal from '../AddExpenseModal/ExpensesModal'
-export default function ExpenseBalance({expenseList,expenseBalance,setExpenseList,isEdit}) {
+export default function ExpenseBalance({expenseList,expenseBalance,setExpenseList, setExpenseBalance,balance,setBalance}) {
     const [toggleModal, setToggleModal] = useState(false);
 
     const handleOpen = () => setToggleModal(true);
@@ -20,7 +20,7 @@ export default function ExpenseBalance({expenseList,expenseBalance,setExpenseLis
             <h6 style={{marginBottom:'10px',fontWeight: 400,fontSize:'30px',fontFamily:'Ubuntu', color: '#ffff'}}>Expenses: <span style={{color: '#F4BB4A',fontWeight: 400,fontSize:'30px',fontFamily:'Ubuntu'}}>₹{expenseBalance}</span></h6>
             {
                 toggleModal && (
-                    <AddEditExpenseModal isEdit={isEdit} expenseList={expenseList} expenseBalance={expenseBalance} setExpenseList={setExpenseList} handleClose={handleClose} open={toggleModal}/>
+                    <AddEditExpenseModal setBalance={setBalance} setExpenseBalance={setExpenseBalance} expenseList={expenseList} expenseBalance={expenseBalance} setExpenseList={setExpenseList} handleClose={handleClose} open={toggleModal}/>
                 )
             }
             <button onClick={handleOpen} style={{borderRadius: '10px',padding: '5px 15px',border: 'none',color: '#FFFFFF', background: 'linear-gradient(90deg, #FF9595 0%, #FF4747 80%, #FF3838 100%)'}}>+ Add Expense</button>

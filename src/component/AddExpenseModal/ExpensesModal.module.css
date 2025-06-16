@@ -2,3 +2,11 @@
     display: flex;
     column-gap: 10px;
 }
+.data_input {
+    font-family: Open Sans;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(145, 145, 145, 1);
+}
