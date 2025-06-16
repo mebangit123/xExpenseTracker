@@ -1,14 +1,23 @@
-import {Box} from '@mui/material';
-import WalletBalance from '../components/Wallet/WalletBalance'
-import ExpenseBalance from '../components/Expense/ExpenseBalance'
-import ExpenseTransanction from '../components/Transanction/ExpenseTransanction'
-import { useEffect, useState } from 'react';
-function Home() {
+import { useEffect, useState } from "react";
+import Card from "../components/Card/Card";
+import styles from "./Home.module.css";
+import TransactionList from "../components/TransactionList/TransactionList";
+import ExpenseForm from "../components/Forms/AddExpenseForm/AddExpenseForm";
+import Modal from "../components/Modal/Modal";
+import AddBalanceForm from "../components/Forms/AddBalanceForm/AddBalanceForm";
+import PieChart from "../components/PieChart/PieChart";
+import BarChart from "../components/BarChart/BarChart";
+
+export default function Home() {
   const [balance, setBalance] = useState(0);
-  const [isEdit, setIsEdit] = useState(true);
+  const [expense, setExpense] = useState(0);
   const [expenseList, setExpenseList] = useState([]);
-  const [expenseBalance, setExpenseBalance] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+
+  //Show hide modals
+  const [isOpenExpense, setIsOpenExpense] = useState(false);
+  const [isOpenBalance, setIsOpenBalance] = useState(false);
+
   const [categorySpends, setCategorySpends] = useState({
     food: 0,
     entertainment: 0,
@@ -21,40 +30,40 @@ function Home() {
   });
 
   useEffect(() => {
-    console.log('UseEffect 1......')
-    let localBalance = localStorage.getItem("balance");
-    if (localBalance) {
-      // handleBalance(Number(localBalance));
-      setBalance(Number(localBalance))
-    } else {
-      // handleBalance(5000);
-      setBalance(Number(5000));
-    }
-    const expenseItems = JSON.parse(localStorage.getItem("expense"));
-    setExpenseList(expenseItems || []);
-    setIsMounted(true);
-  },[]);
-  
+    //Check localStorage
+    const localBalance = localStorage.getItem("balance");
 
+    if (localBalance) {
+      setBalance(Number(localBalance));
+    } else {
+      setBalance(5000);
+      localStorage.setItem("balance", 5000);
+    }
+
+    const items = JSON.parse(localStorage.getItem("expenses"));
+
+    setExpenseList(items || []);
+    setIsMounted(true);
+  }, []);
+
+  // saving expense list in localStorage
   useEffect(() => {
-    console.log('UseEffect 3......')
-    console.log('expense change.....')    
-    if(expenseList.length > 0 || isMounted) { 
-      console.log(expenseList);
-      localStorage.setItem("expense", JSON.stringify(expenseList));      
-    } 
+    if (expenseList.length > 0 || isMounted) {
+      localStorage.setItem("expenses", JSON.stringify(expenseList));
+    }
+
     if (expenseList.length > 0) {
-      setExpenseBalance(
+      setExpense(
         expenseList.reduce(
           (accumulator, currentValue) =>
             accumulator + Number(currentValue.price),
           0
         )
       );
+    } else {
+      setExpense(0);
     }
-    else {
-      setExpenseBalance(0);
-    }
+
     let foodSpends = 0,
       entertainmentSpends = 0,
       travelSpends = 0;
@@ -88,97 +97,83 @@ function Home() {
     });
   }, [expenseList]);
 
-  const handleBalance = (bal) => {
-    // localStorage.setItem('balance', bal);
-    setBalance(prevBal => prevBal + bal);    
-  }
-  
+  // saving balance in localStorage
   useEffect(() => {
-    if(isMounted) {
-      console.log('UseEffect balChange......')
+    if (isMounted) {
       localStorage.setItem("balance", balance);
-    // }
-    }            
-  },[balance]);
+    }
+  }, [balance]);
 
   return (
-    <div 
-      style={{
-        height: '100vh',
-        background: '#3B3B3B',
-        // paddingTop: 2,
-        // padding:  '0 2',
-        boxSizing: 'border-box'
-      }}
-    >
-      <h1 style={{
-          fontFamily: 'Ubuntu',
-          fontWeight: 700,
-          fontSize: '32px',
-          lineHeight: '100%',
-          margin: 0,
-          color: '#FFFFFF'
-        }}
-      > 
-        Expense Tracker
-      </h1>   
-      <div style={{
-          border: '1px solid #9B9B9B',
-          height: '90%',
-          mt: 1
-        }}
-      >
-        <div style={{
-            boxShadow: '0px 4px 4px 0px #00000040',
-            background: '#626262',
-            height: '40%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+    <div className={styles.container}>
+      <h1>Expense Tracker</h1>
 
+      {/* Cards and pie chart wrapper */}
+
+      <div className={styles.cardsWrapper}>
+        <Card
+          title="Wallet Balance"
+          money={balance}
+          buttonText="+ Add Income"
+          buttonType="success"
+          handleClick={() => {
+            setIsOpenBalance(true);
           }}
-        >
-          <div style={{display: 'flex',justifyContent: 'space-between', alignItems:'center', height: '70%',width: '60%', paddingLeft: '50px'}}>
-            <WalletBalance handleBalance={handleBalance} balance={balance}/>
-            <ExpenseBalance 
-              expenseList={expenseList} 
-              expenseBalance={expenseBalance} 
-              setExpenseList={setExpenseList} 
-              setExpenseBalance={setExpenseBalance} 
-              balance={balance} 
-              setBalance={setBalance} 
-            />
-          </div>   
-          <div style={{width: '30%'}}>Other content</div>
-        </div>
-        <h2 style={{
-            fontFamily: 'Ubuntu',
-            fontWeight: 700,
-            fontSize: '28px',
-            lineHeight: '100%',
-            fontStyle: 'italic',
-            color: '#FFFFFF',
-            marginTop: 20,
+        />
+
+        <Card
+          title="Expenses"
+          money={expense}
+          buttonText="+ Add Expense"
+          buttonType="failure"
+          success={false}
+          handleClick={() => {
+            setIsOpenExpense(true);
           }}
-        > 
-          Recent Transaction
-        </h2> 
-        <div display='flex'>
-          <ExpenseTransanction 
-            isEdit={isEdit} 
-            setIsEdit={setIsEdit}
-            expenseList={expenseList} 
-            expenseBalance={expenseBalance} 
-            setExpenseList={setExpenseList} 
-            setExpenseBalance={setExpenseBalance} 
-            balance={balance} 
-            setBalance={setBalance} 
-          />
-        </div>       
-      </div>       
+        />
+
+        <PieChart
+          data={[
+            { name: "Food", value: categorySpends.food },
+            { name: "Entertainment", value: categorySpends.entertainment },
+            { name: "Travel", value: categorySpends.travel },
+          ]}
+        />
+      </div>
+
+      {/* Transactions and bar chart wrapper */}
+      <div className={styles.transactionsWrapper}>
+        <TransactionList
+          transactions={expenseList}
+          editTransactions={setExpenseList}
+          title="Recent Transactions"
+          balance={balance}
+          setBalance={setBalance}
+        />
+
+        <BarChart
+          data={[
+            { name: "Food", value: categorySpends.food },
+            { name: "Entertainment", value: categorySpends.entertainment },
+            { name: "Travel", value: categorySpends.travel },
+          ]}
+        />
+      </div>
+
+      {/* Modals */}
+      <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
+        <ExpenseForm
+          setIsOpen={setIsOpenExpense}
+          expenseList={expenseList}
+          setExpenseList={setExpenseList}
+          setBalance={setBalance}
+          balance={balance}
+        />
+      </Modal>
+
+      <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
+        <AddBalanceForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
+      </Modal>
     </div>
   );
 }
-
-export default Home;
