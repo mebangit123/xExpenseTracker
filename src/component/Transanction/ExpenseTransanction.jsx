@@ -9,7 +9,7 @@ function ExpenseTransanction({isEdit, setIsEdit, expenseList, expenseBalance, se
         {
             expenseList.length > 0 ? (
                 expenseList.map((expense, idx) => (
-                    <TransanctionCard setExpenseList={setExpenseList} isEdit={isEdit} expense={expense} expenseId={expense.id} key={idx}/>
+                    <TransanctionCard setBalance={setBalance} setExpenseList={setExpenseList} isEdit={isEdit} expense={expense} expenseId={expense.id} index={idx} key={idx}/>
                 ))                    
             ) : (
                 <div>

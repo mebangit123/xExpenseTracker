@@ -21,7 +21,7 @@ const istyle = {
   padding: '20px 30px'
 };
 
-export default function AddEditExpenseModal({setBalance,setExpenseBalance,expenseId, isEdit=false,expenseBalance,setExpenseList,handleClose,open}) {  
+export default function AddEditExpenseModal({setBalance, balance,setExpenseBalance,expenseId, isEdit=false,expenseBalance,setExpenseList,handleClose,open}) {  
   const [formData, setFormData] = useState({
         title: '',
         category: '',
@@ -53,30 +53,36 @@ export default function AddEditExpenseModal({setBalance,setExpenseBalance,expens
     e.preventDefault();
     console.log('form submit .......')
     const data = JSON.parse(localStorage.getItem('expense'));
-    const balance = Number(localStorage.getItem('balance'));
+    const balance = Number(localStorage.getItem('balance'));    
     if(formData.price > balance) {
       console.log("Insufficient balance");
       return;
-    }    
-    setBalance(prev => prev - Number(formData.price));
-    let id = data ? data[0].id : 0;
-    isEdit ? (
-              handleEdit(data)) 
-           : (setExpenseList(prev => [{...formData, id : id + 1}, ...prev]))
-    setFormData({
-        title: '',
-        category: '',
-        price: '',
-        date: '',
-    })         
+    }
+
+    isEdit ? (handleEdit(data, balance)) : ( handleAdd(data))
   }
   
-  const handleEdit = (data) => {
+  const handleAdd = (data) =>  {        
+        let id = data.length > 0 ? data[0].id : 0;      
+        setBalance((prev) => prev - Number(formData.price))
+        setExpenseList(prev => [{...formData, id : id + 1}, ...prev]);
+        setFormData({
+            title: '',
+            category: '',
+            price: '',
+            date: '',
+        }) 
+  }
+  const handleEdit = (data, id) => {
     
     console.log('Inside eit....')
     console.log('Id..', expenseId);
     const index = data.findIndex(item => item.id === expenseId);
     console.log(index);
+    console.log(data.price);
+    const priceDifference = data[index].price - Number(formData.price);
+    console.log("Diff bal...", priceDifference)
+    setBalance(prev => prev + priceDifference)
     data[index] = {...data[index], ...formData}  
     setExpenseList(data)
     closeModal();
