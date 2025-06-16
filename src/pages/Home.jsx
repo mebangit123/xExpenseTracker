@@ -152,7 +152,7 @@ function Home() {
           </div>   
           <div style={{width: '30%'}}>Other content</div>
         </div>
-        <h1 style={{
+        <h2 style={{
             fontFamily: 'Ubuntu',
             fontWeight: 700,
             fontSize: '28px',
@@ -163,7 +163,7 @@ function Home() {
           }}
         > 
           Recent Transaction
-        </h1> 
+        </h2> 
         <div display='flex'>
           <ExpenseTransanction 
             isEdit={isEdit} 

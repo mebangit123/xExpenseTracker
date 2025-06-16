@@ -6,6 +6,7 @@ function ExpenseTransanction({isEdit, setIsEdit, expenseList, expenseBalance, se
 
     return (
     <div className={style.wrapper}>
+        
         {
             expenseList.length > 0 ? (
                 expenseList.map((expense, idx) => (
