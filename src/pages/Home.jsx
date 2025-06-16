@@ -1,7 +1,7 @@
 import {Box} from '@mui/material';
-import WalletBalance from '../Wallet/WalletBalance'
-import ExpenseBalance from '../Expense/ExpenseBalance'
-import ExpenseTransanction from '../Transanction/ExpenseTransanction'
+import WalletBalance from '../components/Wallet/WalletBalance'
+import ExpenseBalance from '../components/Expense/ExpenseBalance'
+import ExpenseTransanction from '../components/Transanction/ExpenseTransanction'
 import { useEffect, useState } from 'react';
 function Home() {
   const [balance, setBalance] = useState(0);
@@ -24,9 +24,11 @@ function Home() {
     console.log('UseEffect 1......')
     let localBalance = localStorage.getItem("balance");
     if (localBalance) {
-      handleBalance(Number(localBalance));
+      // handleBalance(Number(localBalance));
+      setBalance(Number(localBalance))
     } else {
-      handleBalance(5000);
+      // handleBalance(5000);
+      setBalance(Number(5000));
     }
     const expenseItems = JSON.parse(localStorage.getItem("expense"));
     setExpenseList(expenseItems || []);
@@ -100,12 +102,12 @@ function Home() {
   },[balance]);
 
   return (
-    <Box 
-      sx={{
+    <div 
+      style={{
         height: '100vh',
         background: '#3B3B3B',
-        paddingTop: 2,
-        paddingX: 2,
+        // paddingTop: 2,
+        // padding:  '0 2',
         boxSizing: 'border-box'
       }}
     >
@@ -120,13 +122,13 @@ function Home() {
       > 
         Expense Tracker
       </h1>   
-      <Box sx={{
+      <div style={{
           border: '1px solid #9B9B9B',
           height: '90%',
           mt: 1
         }}
       >
-        <Box sx={{
+        <div style={{
             boxShadow: '0px 4px 4px 0px #00000040',
             background: '#626262',
             height: '40%',
@@ -149,7 +151,7 @@ function Home() {
             />
           </div>   
           <div style={{width: '30%'}}>Other content</div>
-        </Box>
+        </div>
         <h1 style={{
             fontFamily: 'Ubuntu',
             fontWeight: 700,
@@ -162,7 +164,7 @@ function Home() {
         > 
           Recent Transaction
         </h1> 
-        <Box display='flex'>
+        <div display='flex'>
           <ExpenseTransanction 
             isEdit={isEdit} 
             setIsEdit={setIsEdit}
@@ -173,9 +175,9 @@ function Home() {
             balance={balance} 
             setBalance={setBalance} 
           />
-        </Box>       
-      </Box>       
-    </Box>
+        </div>       
+      </div>       
+    </div>
   );
 }
 
