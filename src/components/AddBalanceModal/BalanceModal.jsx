@@ -53,7 +53,7 @@ export default function AddBalance({handleBalance,balance,handleClose,open}) {
             Add Balance</h1>
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-              <input name="balance" value={currentBalance} onChange={(e) => setCurrentBalace(e.target.value)} style={{width: '130px', border: 'none',boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',padding: '10px 5px', borderRadius: '15px',outline: 'none'}} type="text" placeholder='Income Amount' />
+              <input  type="number" name="balance" value={currentBalance} onChange={(e) => setCurrentBalace(e.target.value)} style={{width: '130px', border: 'none',boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',padding: '10px 5px', borderRadius: '15px',outline: 'none'}} placeholder='Income Amount' />
               <button type='submit' style={{width: '100px',background: 'linear-gradient(0deg, #F4BB4A, #F4BB4A)',border: 'none',boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',padding: '10px 5px', borderRadius: '15px', outline: 'none', color: '#FFFFFF',fontFamily: 'Open Sans',fontWeight: '700', fontSize: '16px'}}>Add Balance</button>
               <button type='submit' onClick={handleClose} style={{width: '80px',border: 'none',boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',padding: '10px 5px', borderRadius: '15px', outline: 'none', color: '#000000',fontFamily: 'Open Sans',fontWeight: '400', fontSize: '16px'}}>Cancel</button>
             </div>            

@@ -1,4 +1,4 @@
-import Home from './pages/HomeDup'
+import Home from './pages/Home'
 import { SnackbarProvider } from 'notistack';
 
 function App() {
